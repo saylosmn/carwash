@@ -19,7 +19,7 @@ create table if not exists public.bookings (
   latitude double precision check (latitude between -90 and 90),
   longitude double precision check (longitude between -180 and 180),
   booking_date date not null,
-  booking_hour integer not null check (booking_hour between 9 and 18),
+  booking_hour integer not null check (booking_hour between 0 and 23),
   status text not null default 'new' check (status in ('new','confirmed','on_way','done','cancelled')),
   quote_amount integer check (quote_amount between 0 and 100000000),
   quote_status text not null default 'pending' check (quote_status in ('pending','offered','accepted','declined')),
@@ -62,23 +62,21 @@ create or replace function public.book_visit(
   p_date date,p_hour integer
 ) returns table(id uuid, access_token uuid)
 language plpgsql security definer set search_path = public, pg_temp as $$
-declare v_duration integer; v_hour integer; v_count integer; v_today date;
+declare v_duration integer; v_start timestamp; v_slot timestamp; v_count integer; v_now timestamp;
 begin
-  v_today := (now() at time zone 'Asia/Ulaanbaatar')::date;
-  if p_date < v_today or p_date > v_today + 60 or p_hour < 9 or p_hour > 18 then
+  v_now := now() at time zone 'Asia/Ulaanbaatar';
+  if p_date < v_now::date or p_date > v_now::date + 60 or p_hour not between 0 and 23 then
     raise exception 'INVALID_SLOT';
   end if;
+  v_start := p_date::timestamp + p_hour * interval '1 hour';
+  if v_start <= v_now then raise exception 'INVALID_SLOT'; end if;
   v_duration := case when p_service = 'full' then 2 else 1 end;
-  if p_hour + v_duration > 19 then raise exception 'INVALID_SLOT'; end if;
-  if p_date = v_today and p_hour <= extract(hour from now() at time zone 'Asia/Ulaanbaatar')::integer then
-    raise exception 'INVALID_SLOT';
-  end if;
-  perform pg_advisory_xact_lock(hashtext(p_date::text));
-  for v_hour in p_hour..p_hour + v_duration - 1 loop
+  perform pg_advisory_xact_lock(hashtext('easycarwash-booking-calendar'));
+  for v_slot in select generate_series(v_start, v_start + (v_duration-1) * interval '1 hour', interval '1 hour') loop
     select count(*) into v_count from public.bookings b
-      where b.booking_date = p_date and b.status <> 'cancelled'
-      and b.booking_hour <= v_hour
-      and b.booking_hour + case when b.service = 'full' then 2 else 1 end > v_hour;
+      where b.status <> 'cancelled'
+      and (b.booking_date::timestamp + b.booking_hour * interval '1 hour') <= v_slot
+      and (b.booking_date::timestamp + (b.booking_hour + case when b.service='full' then 2 else 1 end) * interval '1 hour') > v_slot;
     if v_count >= 2 then raise exception 'SLOT_FULL'; end if;
   end loop;
   return query insert into public.bookings
@@ -92,17 +90,18 @@ grant execute on function public.book_visit(text,text,text,text,text,text,text,d
 
 create or replace function public.available_hours(p_date date,p_service text)
 returns table(hour integer, available boolean) language plpgsql security definer set search_path = public, pg_temp as $$
-declare h integer; t integer; n integer; duration integer; okay boolean;
+declare h integer; v_slot timestamp; v_start timestamp; v_now timestamp; n integer; duration integer; okay boolean;
 begin
+  v_now := now() at time zone 'Asia/Ulaanbaatar';
   duration := case when p_service = 'full' then 2 else 1 end;
-  for h in 9..18 loop
-    okay := p_date between (now() at time zone 'Asia/Ulaanbaatar')::date and (now() at time zone 'Asia/Ulaanbaatar')::date + 60
-      and h + duration <= 19;
-    if p_date = (now() at time zone 'Asia/Ulaanbaatar')::date and h <= extract(hour from now() at time zone 'Asia/Ulaanbaatar')::integer then okay := false; end if;
+  for h in 0..23 loop
+    v_start := p_date::timestamp + h * interval '1 hour';
+    okay := p_date between v_now::date and v_now::date + 60 and v_start > v_now;
     if okay then
-      for t in h..h + duration - 1 loop
-        select count(*) into n from public.bookings b where b.booking_date = p_date and b.status <> 'cancelled'
-          and b.booking_hour <= t and b.booking_hour + case when b.service='full' then 2 else 1 end > t;
+      for v_slot in select generate_series(v_start, v_start + (duration-1) * interval '1 hour', interval '1 hour') loop
+        select count(*) into n from public.bookings b where b.status <> 'cancelled'
+          and (b.booking_date::timestamp + b.booking_hour * interval '1 hour') <= v_slot
+          and (b.booking_date::timestamp + (b.booking_hour + case when b.service='full' then 2 else 1 end) * interval '1 hour') > v_slot;
         if n >= 2 then okay := false; end if;
       end loop;
     end if;
