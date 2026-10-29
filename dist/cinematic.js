@@ -23,8 +23,13 @@
       visual.classList.toggle('fully-clean',progress>=.995);
     };
     range.addEventListener('input',()=>{manual=true;setProgress(Number(range.value)/100)});
+    let frame=0;
     window.addEventListener('scroll',()=>{
-      if(!manual)setProgress(Math.min(1,window.scrollY/(window.innerHeight*.75)));
+      if(manual||frame)return;
+      frame=requestAnimationFrame(()=>{
+        frame=0;
+        setProgress(Math.min(1,window.scrollY/(window.innerHeight*.75)));
+      });
     },{passive:true});
     setProgress(0);
 
