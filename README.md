@@ -5,11 +5,10 @@
 ## Ажиллуулах дараалал
 
 1. Supabase project үүсгэнэ. **SQL Editor** дотор [`supabase/schema.sql`](supabase/schema.sql) файлыг ажиллуулна.
-2. Supabase **Authentication → Users** хэсэгт эзний имэйл, нууц үгтэй хэрэглэгч үүсгэнэ. Түүний UUID-г авч SQL Editor дотор `insert into public.admin_users(user_id) values ('UUID');` ажиллуулна.
-3. **Project Settings → API** хэсгийн project URL болон **publishable/anon key**-г `dist/config.js` файлд оруулна. Энэ нь нийтийн түлхүүр; **service_role/secret key-г хэзээ ч оруулахгүй**.
-4. `admin-app/.env.example`-г `admin-app/.env.local` болгон хуулж, ижил URL ба publishable key-г оруулна.
-5. `git push` хийсний дараа Vercel дахин deploy хийнэ. Сайт дээр бодит захиалга, админ веб дээр тухайн захиалга харагдахыг шалгана.
-6. Expo апп: `cd admin-app`, `npm install`, `npx expo start`. Утсанд туршихдаа Expo Go эсвэл development build ашиглана. App Store/Play Store-д нийтлэхэд Expo/EAS эрх болон signing хэрэгтэй.
+2. Supabase **Authentication → Users** хэсэгт эзний имэйл, нууц үгтэй хэрэглэгч үүсгэнэ. SQL Editor дотор `insert into public.admin_users(user_id) select id from auth.users where email = 'OWNER_EMAIL';` ажиллуулна (`OWNER_EMAIL`-ийг эзний имэйлээр солино).
+3. **Project Settings → API** хэсгээс project URL болон **publishable/anon key**-г авна. PowerShell дээр `./scripts/connect-supabase.ps1` ажиллуулаад эдгээр хоёр утгыг оруулна. Скрипт сайт болон Expo аппын тохиргоог хамтад нь бэлдэнэ. **service_role/secret key-г хэзээ ч оруулахгүй**.
+4. `git add dist/config.js && git commit -m "Connect Supabase" && git push` хийсний дараа Vercel дахин deploy хийнэ. `admin-app/.env.local` Git-д орохгүй; Expo аппын local тохиргоонд ашиглагдана. Сайт дээр бодит захиалга, админ веб дээр тухайн захиалга харагдахыг шалгана.
+5. Expo апп: `cd admin-app`, `npm install`, `npx expo start`. Утсанд туршихдаа Expo Go эсвэл development build ашиглана. App Store/Play Store-д нийтлэхэд Expo/EAS эрх болон signing хэрэгтэй.
 
 ## Захиалгын урсгал
 

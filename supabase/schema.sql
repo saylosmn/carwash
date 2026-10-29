@@ -142,5 +142,5 @@ end $$;
 revoke all on function public.respond_quote(uuid,boolean) from public;
 grant execute on function public.respond_quote(uuid,boolean) to anon;
 
--- After creating an Auth user for the owner, add their UUID here in SQL editor:
--- insert into public.admin_users(user_id) values ('OWNER_AUTH_USER_UUID');
+-- After creating an Auth user for the owner, run this in SQL editor:
+-- insert into public.admin_users(user_id) select id from auth.users where email = 'OWNER_EMAIL';
