@@ -1,0 +1,57 @@
+@media (max-width:800px){
+  html,body{max-width:100%;overflow-x:clip}
+  .cinematic header{padding:18px 5%;gap:12px;align-items:center}
+  .cinematic .logo{font-size:25px;letter-spacing:-1.4px;flex-shrink:0}
+  .cinematic .logo span{font-size:7px;letter-spacing:1.35px;margin-top:6px}
+  .cinematic .hero{padding-top:77svh!important;overflow:visible}
+  .cinematic .hero-image{height:77svh!important}
+  .cinematic .hero-image img{object-position:57% center}
+  .cinematic .hero-copy{top:18svh;left:5%;right:5%;max-width:none}
+  .cinematic .hero-copy h1{font-size:clamp(26px,7.5vw,39px);line-height:1.07;letter-spacing:-1.4px;margin:0 0 15px;overflow-wrap:anywhere}
+  .cinematic .hero-copy p{font-size:12px;line-height:1.5;margin:0;max-width:290px}
+  .cinematic .hero-cta{margin-top:18px;padding:13px 17px;font-size:12px}
+  .wash-control{top:calc(77svh - 65px);left:5%;width:90%;padding:11px 14px;gap:10px;font-size:9px;letter-spacing:1px}
+  .wash-control input{min-height:24px}
+  .cinematic .studio-booking{width:calc(100% - 28px);margin:0 14px 26px;padding:22px;border-radius:16px;float:none;opacity:1;transform:none;transition:none;box-shadow:0 15px 36px #0006}
+  .cinematic .studio-booking h3{font-size:22px}
+  .cinematic .services{margin:0 14px;padding:36px 0 44px}
+  .cinematic .section-heading{margin-bottom:17px}
+  .cinematic .section-heading h2{font-size:26px;line-height:1.15;margin:9px 0 0}
+  .cinematic .service-grid{gap:12px}
+  .cinematic .service-grid article{opacity:1;transform:none;transition:none}
+  .cinematic .service-grid article{padding:20px 21px}
+  .cinematic .service-grid h3{margin:8px 0 5px}
+  .cinematic .service-grid ul{display:none}
+  .cinematic .service-grid .price{margin:12px 0}
+  .cinematic .service-grid article button{margin-top:16px}
+  .price-guide{padding:20px;margin-top:20px}
+  .price-guide-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .price-guide-grid>div{padding:13px;min-height:112px}
+  .price-guide-grid span{font-size:12px}
+  .price-guide-grid strong{font-size:16px;line-height:1.15}
+  .price-guide .small{line-height:1.6}
+  footer{padding:23px 5%}
+}
+@media (max-width:600px){
+  .studio-booking .form-grid{grid-template-columns:1fr;gap:15px}
+  .studio-booking .form-grid .full{grid-column:auto}
+  .studio-booking label,.studio-booking .slot-label{font-size:12px;line-height:1.3}
+  .studio-booking input,.studio-booking select,.studio-booking textarea{font-size:16px;min-height:48px;padding:11px 13px;margin-top:7px}
+  .studio-booking textarea{min-height:83px}
+  .studio-booking .location-row{gap:6px;margin:14px 0 19px}
+  .studio-booking .location{font-size:12px}
+  .studio-booking .location-row span{font-size:11px}
+  .studio-booking .slots{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:11px 0 21px}
+  .studio-booking .slots button{min-height:45px;font-size:12px}
+  .studio-booking .total{padding:17px 0;gap:10px}
+  .studio-booking .total strong{font-size:19px;text-align:right}
+  .studio-booking .submit{min-height:50px;font-size:13px}
+  .copy-order-link{min-height:40px}
+}
+@media (max-width:380px){
+  .cinematic .logo{font-size:23px}
+  .cinematic .hero-copy h1{font-size:26px}
+  .my-orders-link:not([hidden]){font-size:9px;padding:8px 9px}
+  .price-guide-grid{grid-template-columns:1fr}
+  .price-guide-grid>div{min-height:0;gap:5px}
+}
