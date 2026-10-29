@@ -1,15 +1,38 @@
 (()=>{
-const init=()=>{
- document.body.classList.add('cinematic');
- const hero=document.querySelector('.hero'), visual=document.querySelector('.hero-image'),form=document.querySelector('#booking-form');
- visual.querySelectorAll('img').forEach(img=>img.src='studio-car.png');
- hero.append(form);form.classList.add('studio-booking');
- document.querySelector('.hero-copy h1').innerHTML='БОХИРДЛООС<br><em>ГЯЛАЛЗАХ ХҮРТЭЛ.</em>';
- document.querySelector('.hero-copy>p').textContent='Таны машин. Таны байршил. EASY CAR WASH.';
- const control=document.createElement('div');control.className='wash-control';control.innerHTML='<span>БОХИР</span><input aria-label="Угаалгын шилжилт" type="range" min="0" max="100" value="0"><span>ЦЭВЭР</span>';visual.append(control);
- const range=control.querySelector('input');let manual=false;const set=p=>{const v=Math.max(0,Math.min(1,p));visual.style.setProperty('--reveal',`${(1-v)*100}%`);visual.style.setProperty('--clean-progress',v);range.value=Math.round(v*100);visual.dispatchEvent(new CustomEvent('wash-progress',{detail:v}))};range.oninput=()=>{manual=true;set(Number(range.value)/100)};
- const carScript=document.createElement('script');carScript.type='module';carScript.src='model-3d.js?v=6';document.body.append(carScript);
- const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view');observer.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll('.service-grid article,.how article,.hero-copy h1,.studio-booking').forEach((item,i)=>{item.style.setProperty('--stagger',`${Math.min(i,5)*85}ms`);observer.observe(item)});
- window.addEventListener('scroll',()=>{if(!manual)set(Math.min(1,Math.max(0,window.scrollY/(window.innerHeight*.65))))},{passive:true});set(0);
-};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+  const init=()=>{
+    document.body.classList.add('cinematic');
+    const hero=document.querySelector('.hero');
+    const visual=document.querySelector('.hero-image');
+    const form=document.querySelector('#booking-form');
+    if(!hero||!visual||!form)return;
+    hero.append(form);
+    form.classList.add('studio-booking');
+
+    const control=document.createElement('div');
+    control.className='wash-control';
+    control.innerHTML='<span>БОХИР</span><input aria-label="Бохир цэвэр зураг шилжүүлэх" type="range" min="0" max="100" value="0"><span>ЦЭВЭР</span>';
+    visual.append(control);
+    const range=control.querySelector('input');
+    let manual=false;
+    const setProgress=value=>{
+      const progress=Math.max(0,Math.min(1,value));
+      visual.style.setProperty('--reveal',`${Math.round(progress*100)}%`);
+      range.value=String(Math.round(progress*100));
+      visual.classList.toggle('fully-clean',progress>=.995);
+    };
+    range.addEventListener('input',()=>{manual=true;setProgress(Number(range.value)/100)});
+    window.addEventListener('scroll',()=>{
+      if(!manual)setProgress(Math.min(1,window.scrollY/(window.innerHeight*.75)));
+    },{passive:true});
+    setProgress(0);
+
+    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+      if(entry.isIntersecting){entry.target.classList.add('in-view');observer.unobserve(entry.target)}
+    }),{threshold:.12});
+    document.querySelectorAll('.service-grid article,.how article,.hero-copy h1,.studio-booking').forEach((item,index)=>{
+      item.style.setProperty('--stagger',`${Math.min(index,5)*85}ms`);
+      observer.observe(item);
+    });
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
