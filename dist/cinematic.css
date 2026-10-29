@@ -26,6 +26,7 @@ body.cinematic{background:#101416;color:#e9ecea}
 .cinematic .services,.cinematic .how,.cinematic .booking,.cinematic footer{color:#d5e1dc}
 .cinematic .service-grid article{background:#192320;border-color:#33463c}
 .cinematic .service-grid .featured{background:#25372b}
+.cinematic .service-grid .outline{color:#dce8e5;border-color:#789b98}
 .cinematic .social{color:#183d35}
 .cinematic .booking{display:block;background:none;padding:40px}
 .cinematic .booking-copy{max-width:800px;margin:auto}

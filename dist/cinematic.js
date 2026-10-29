@@ -5,7 +5,9 @@
     const visual=document.querySelector('.hero-image');
     const form=document.querySelector('#booking-form');
     if(!hero||!visual||!form)return;
+    const source=form.parentElement;
     hero.append(form);
+    if(source?.classList.contains('booking-source'))source.remove();
     form.classList.add('studio-booking');
 
     const control=document.createElement('div');
