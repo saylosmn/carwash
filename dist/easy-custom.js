@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('body *').forEach(el=>{if(el.children.length===0&&/Telegram|SMS|телеграм|мессеж/i.test(el.textContent))el.textContent=el.textContent.replace(/Telegram|SMS|телеграм|мессеж/gi,'browser notification')});
   const notify=(title,body)=>{if('Notification' in window&&Notification.permission==='granted'){new Notification(title,{body,icon:'https://nomad-carwash-demo.mellowrook513.chatgpt.site/favicon.ico',tag:'easy-car-wash-order'});try{const ctx=new (window.AudioContext||window.webkitAudioContext)(),osc=ctx.createOscillator(),gain=ctx.createGain();osc.frequency.value=740;gain.gain.value=.06;osc.connect(gain);gain.connect(ctx.destination);osc.start();osc.stop(ctx.currentTime+.18)}catch{}}};
   const requestNotify=()=>{'Notification' in window&&Notification.permission==='default'&&Notification.requestPermission()};
   document.querySelector('#admin-open').addEventListener('click',requestNotify);
