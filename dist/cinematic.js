@@ -5,9 +5,6 @@
     const visual=document.querySelector('.hero-image');
     const form=document.querySelector('#booking-form');
     if(!hero||!visual||!form)return;
-    const source=form.parentElement;
-    hero.append(form);
-    if(source?.classList.contains('booking-source'))source.remove();
     form.classList.add('studio-booking');
 
     const control=document.createElement('div');
@@ -25,7 +22,7 @@
     range.addEventListener('input',()=>{manual=true;setProgress(Number(range.value)/100)});
     let frame=0;
     window.addEventListener('scroll',()=>{
-      if(manual||frame)return;
+      if(manual||frame||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
       frame=requestAnimationFrame(()=>{
         frame=0;
         setProgress(Math.min(1,window.scrollY/(window.innerHeight*.75)));
@@ -33,6 +30,7 @@
     },{passive:true});
     setProgress(0);
 
+    if(!('IntersectionObserver' in window))return;
     const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
       if(entry.isIntersecting){entry.target.classList.add('in-view');observer.unobserve(entry.target)}
     }),{threshold:.12});

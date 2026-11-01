@@ -18,6 +18,9 @@
       const a = document.createElement('a');
       a.href = url.href; a.textContent = name; a.rel = 'noopener noreferrer'; a.target = '_blank';
       contacts.append(a);
+      document.querySelectorAll(`[data-social="${name}"]`).forEach(link => {
+        link.href = url.href; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.removeAttribute('aria-disabled');
+      });
     } catch {}
   }
   for (const element of document.querySelectorAll('[data-fact]')) {
